@@ -54,7 +54,11 @@ parser.add_option("--status", dest="status", type="int", help="Update status of 
 u = urlparse(project_url)
 
 def get_issue(id):
-    conn = httplib.HTTPConnection(u.netloc)
+    if u.scheme == 'https':
+        conn = httplib.HTTPSConnection(u.netloc)
+    else:
+        conn = httplib.HTTPConnection(u.netloc)
+
     conn.request("GET", "%s/issues/%d.json?key=%s" % (u.path, id, api_key))
     r1 = conn.getresponse()
     if r1.status != 200:
@@ -67,7 +71,11 @@ def get_issue(id):
 def update_issue(id, data):
     json_data = json.dumps(data)
 
-    conn = httplib.HTTPConnection(u.netloc)
+    if u.scheme == 'https':
+        conn = httplib.HTTPSConnection(u.netloc)
+    else:
+        conn = httplib.HTTPConnection(u.netloc)
+
     conn.request("PUT", "%s/issues/%d.json?key=%s" % (u.path, id, api_key), body=json_data, headers={"Content-Type":"application/json"})
     r1 = conn.getresponse()
     if r1.status != 200:
